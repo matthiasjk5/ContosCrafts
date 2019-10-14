@@ -39,15 +39,18 @@ namespace ContosCrafts.Services
         {
             var products = GetProducts();
 
-            if (products.First(x => x.Id == productId).Ratings == null)
+            // LINQ
+            var query = products.First(x => x.Id == productId);
+
+            if (query.Ratings == null)
             {
-                products.First(x => x.Id == productId).Ratings = new int[] { rating };
+                query.Ratings = new int[] { rating };
             }
             else
             {
-                var ratings = products.First(x => x.Id == productId).Ratings.ToList();
+                var ratings = query.Ratings.ToList();
                 ratings.Add(rating);
-                products.First(x => x.Id == productId).Ratings = ratings.ToArray();
+                query.Ratings = ratings.ToArray();
             }
 
             using (var outputStream = File.OpenWrite(JsonFileName))
@@ -59,7 +62,7 @@ namespace ContosCrafts.Services
                         Indented = true
                     }),
                     products
-                );
+                    );
             }
         }
     }
